@@ -12,10 +12,11 @@ CREATE TABLE user_data.user
 (
     id         BIGSERIAL PRIMARY KEY,
     email      VARCHAR(100) UNIQUE NOT NULL,
+    password   VARCHAR(100)        NOT NULL,
     name       VARCHAR(50)         NOT NULL,
     surname    VARCHAR(50)         NOT NULL,
     enabled    BOOLEAN             NOT NULL DEFAULT TRUE,
-    created_at TIMESTAMP WITHOUT TIME ZONE  DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE user_data.user_role
@@ -35,10 +36,10 @@ VALUES ('EXECUTOR');
 INSERT INTO user_data.role (name)
 VALUES ('ADMIN');
 
-INSERT INTO user_data.user (email, name, surname)
-VALUES ('test.email@gmail.com', 'test', 'user');
-INSERT INTO user_data.user (email, name, surname)
-VALUES ('john.doe@gmail.com', 'john', 'doe');
+INSERT INTO user_data.user (email, password, name, surname)
+VALUES ('test.email@gmail.com', 'test', 'test', 'user');
+INSERT INTO user_data.user (email, password, name, surname)
+VALUES ('john.doe@gmail.com', 'john', 'john', 'doe');
 
 INSERT INTO user_data.user_role (user_id, role_id)
 VALUES ((SELECT id FROM user_data.user WHERE email = 'test.email@gmail.com'),
