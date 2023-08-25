@@ -40,7 +40,7 @@ public class RegistrationService {
 
         boolean userExists = userRepository.existsByEmail(request.email().trim());
         if (userExists) {
-            return RegistrationStatus.EMAIL_IN_USE;
+            return RegistrationStatus.INVALID_EMAIL;
         }
 
         if (request.password() == null || request.password().isBlank()) {
