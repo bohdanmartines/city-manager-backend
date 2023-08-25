@@ -23,25 +23,41 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 public class JwtService {
 
     private String cookieName;
-    private int cookieExpiryMinutes;
+    private int jwtExpiryMinutes;
+    private int jwtRefreshExpiryMinutes;
     private final SecretKey key;
 
     public JwtService(@Value("${city.manager.jwt.cookie.name}") String cookieName,
-                      @Value("${city.manager.jwt.cookie.exipy.minutes}") int cookieExpiryMinutes,
-                      @Value("${city.manager.jwt.cookie.secret}") String secret) {
+                      @Value("${city.manager.jwt.exipy.minutes}") int jwtExpiryMinutes,
+                      @Value("${city.manager.jwt.refresh.exipy.minutes}") int jwtRefreshExpiryMinutes,
+                      @Value("${city.manager.jwt.secret}") String secret) {
         this.cookieName = cookieName;
-        this.cookieExpiryMinutes = cookieExpiryMinutes;
+        this.jwtExpiryMinutes = jwtExpiryMinutes;
+        this.jwtRefreshExpiryMinutes = jwtRefreshExpiryMinutes;
         this.key = Keys.hmacShaKeyFor(secret.getBytes(US_ASCII));
     }
 
     public ResponseCookie generateJwtCookie(String email) {
-        String jwt = generateJwt(email);
-        return generateCookie(jwt, cookieExpiryMinutes);
+        String jwt = generateJwt(email, jwtExpiryMinutes);
+        return generateCookie(jwt, jwtExpiryMinutes);
+    }
+
+    public String generateJwtRefreshToken(String email) {
+        return generateJwt(email, jwtRefreshExpiryMinutes);
     }
 
     public Optional<String> getEmail(HttpServletRequest request) {
         Optional<String> jwt = getJwtCookie(request);
         return jwt.map(this::getEmailFromJwt);
+    }
+
+    public String getEmailFromJwt(String jwt) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(jwt)
+                .getBody()
+                .getSubject();
     }
 
     public ResponseCookie generateClearJwtCookie() {
@@ -56,20 +72,20 @@ public class JwtService {
                 .build();
     }
 
-    private String generateJwt(String email) {
+    private String generateJwt(String email, int expiryMinutes) {
         Date issuedAt = new Date();
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(issuedAt)
-                .setExpiration(getExpiryDate(issuedAt))
+                .setExpiration(getExpiryDate(issuedAt, expiryMinutes))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    private Date getExpiryDate(Date issuedAt) {
+    private Date getExpiryDate(Date issuedAt, int expiryMinutes) {
         ZoneId zoneId = ZoneId.systemDefault();
         LocalDateTime asLocalDate = issuedAt.toInstant().atZone(zoneId).toLocalDateTime();
-        return Date.from(asLocalDate.plusMinutes(cookieExpiryMinutes).atZone(zoneId).toInstant());
+        return Date.from(asLocalDate.plusMinutes(expiryMinutes).atZone(zoneId).toInstant());
     }
 
     private Optional<String> getJwtCookie(HttpServletRequest request) {
@@ -78,14 +94,5 @@ public class JwtService {
             return Optional.of(cookie.getValue());
         }
         return Optional.empty();
-    }
-
-    private String getEmailFromJwt(String jwt) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(jwt)
-                .getBody()
-                .getSubject();
     }
 }

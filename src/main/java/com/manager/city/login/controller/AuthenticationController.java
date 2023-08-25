@@ -2,6 +2,7 @@ package com.manager.city.login.controller;
 
 import com.manager.city.login.dto.LoginRequest;
 import com.manager.city.login.dto.RegistrationRequest;
+import com.manager.city.login.dto.TokenRefreshRequest;
 import com.manager.city.login.service.JwtService;
 import com.manager.city.login.service.RegistrationService;
 import com.manager.city.login.service.RegistrationStatus;
@@ -36,17 +37,21 @@ public class AuthenticationController {
         this.jwtService = jwtService;
     }
 
+    /**
+     * @return response entity with refresh token as body and with a header to set access token to cookies
+     */
     @PostMapping("login")
     public ResponseEntity<String> login(@RequestBody LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.email(), request.password()));
-        ResponseCookie cookie = jwtService.generateJwtCookie(authentication.getName());
+        ResponseCookie jwtCookie = jwtService.generateJwtCookie(authentication.getName());
+        String jwtRefreshToken = jwtService.generateJwtRefreshToken(authentication.getName());
         LOGGER.info("User [" + authentication.getName() + "] logged in");
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body("Successful login!");
+                .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+                .body(jwtRefreshToken);
     }
 
-    @PostMapping("/logout")
+    @PostMapping("logout")
     public ResponseEntity<String> logout(Principal principal) {
         LOGGER.info("Logging out user [" + principal.getName() + "]");
         ResponseCookie cookie = jwtService.generateClearJwtCookie();
@@ -55,7 +60,7 @@ public class AuthenticationController {
                 .body("Successful logout!");
     }
 
-    @PostMapping("/register")
+    @PostMapping("register")
     public ResponseEntity<String> register(@RequestBody RegistrationRequest request) {
         try {
             RegistrationStatus status = registrationService.register(request);
@@ -67,5 +72,18 @@ public class AuthenticationController {
         }
     }
 
+    @PostMapping("refresh")
+    public ResponseEntity<String> refreshToken(@RequestBody TokenRefreshRequest request) {
+        String refreshToken = request.token();
+        if (refreshToken == null) {
+            return ResponseEntity.badRequest().build();
+        }
 
+        String email = jwtService.getEmailFromJwt(refreshToken);
+        ResponseCookie cookie = jwtService.generateJwtCookie(email);
+        LOGGER.info("Refreshed JWT token for user [" + email + "]");
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .build();
+    }
 }
