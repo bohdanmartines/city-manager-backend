@@ -40,12 +40,11 @@ public class User {
     public User() {
     }
 
-    public User(String email, String password, String name, String surname, List<Role> roles) {
+    public User(String email, String password, String name, String surname) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.surname = surname;
-        this.roles = roles;
     }
 
     public Long getId() {
