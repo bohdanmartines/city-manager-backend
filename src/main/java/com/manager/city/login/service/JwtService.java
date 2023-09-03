@@ -23,27 +23,27 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 public class JwtService {
 
     private String cookieName;
-    private int jwtExpiryMinutes;
-    private int jwtRefreshExpiryMinutes;
+    private int accessTokenExpiryMinutes;
+    private int refreshTokenExpiryMinutes;
     private final SecretKey key;
 
-    public JwtService(@Value("${city.manager.jwt.cookie.name}") String cookieName,
-                      @Value("${city.manager.jwt.exipy.minutes}") int jwtExpiryMinutes,
-                      @Value("${city.manager.jwt.refresh.exipy.minutes}") int jwtRefreshExpiryMinutes,
+    public JwtService(@Value("${city.manager.jwt.access.token.cookie.name}") String cookieName,
+                      @Value("${city.manager.jwt.access.token.expiry.minutes}") int accessTokenExpiryMinutes,
+                      @Value("${city.manager.jwt.refresh.token.expiry.minutes}") int refreshTokenExpiryMinutes,
                       @Value("${city.manager.jwt.secret}") String secret) {
         this.cookieName = cookieName;
-        this.jwtExpiryMinutes = jwtExpiryMinutes;
-        this.jwtRefreshExpiryMinutes = jwtRefreshExpiryMinutes;
+        this.accessTokenExpiryMinutes = accessTokenExpiryMinutes;
+        this.refreshTokenExpiryMinutes = refreshTokenExpiryMinutes;
         this.key = Keys.hmacShaKeyFor(secret.getBytes(US_ASCII));
     }
 
-    public ResponseCookie generateJwtCookie(String email) {
-        String jwt = generateJwt(email, jwtExpiryMinutes);
-        return generateCookie(jwt, jwtExpiryMinutes);
+    public ResponseCookie generateAccessCookie(String email) {
+        String accessToken = generateJwtToken(email, accessTokenExpiryMinutes);
+        return generateCookie(accessToken, accessTokenExpiryMinutes);
     }
 
-    public String generateJwtRefreshToken(String email) {
-        return generateJwt(email, jwtRefreshExpiryMinutes);
+    public String generateRefreshToken(String email) {
+        return generateJwtToken(email, refreshTokenExpiryMinutes);
     }
 
     public Optional<String> getEmail(HttpServletRequest request) {
@@ -60,7 +60,7 @@ public class JwtService {
                 .getSubject();
     }
 
-    public ResponseCookie generateClearJwtCookie() {
+    public ResponseCookie generateClearAccessCookie() {
         return generateCookie(null, 0);
     }
 
@@ -72,7 +72,7 @@ public class JwtService {
                 .build();
     }
 
-    private String generateJwt(String email, int expiryMinutes) {
+    private String generateJwtToken(String email, int expiryMinutes) {
         Date issuedAt = new Date();
         return Jwts.builder()
                 .setSubject(email)

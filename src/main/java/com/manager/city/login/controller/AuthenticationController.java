@@ -43,18 +43,18 @@ public class AuthenticationController {
     @PostMapping("login")
     public ResponseEntity<String> login(@RequestBody LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.email(), request.password()));
-        ResponseCookie jwtCookie = jwtService.generateJwtCookie(authentication.getName());
-        String jwtRefreshToken = jwtService.generateJwtRefreshToken(authentication.getName());
+        ResponseCookie accessCookie = jwtService.generateAccessCookie(authentication.getName());
+        String refreshToken = jwtService.generateRefreshToken(authentication.getName());
         LOGGER.info("User [" + authentication.getName() + "] logged in");
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-                .body(jwtRefreshToken);
+                .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
+                .body(refreshToken);
     }
 
     @PostMapping("logout")
     public ResponseEntity<String> logout(Principal principal) {
         LOGGER.info("Logging out user [" + principal.getName() + "]");
-        ResponseCookie cookie = jwtService.generateClearJwtCookie();
+        ResponseCookie cookie = jwtService.generateClearAccessCookie();
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body("Successful logout!");
@@ -80,8 +80,8 @@ public class AuthenticationController {
         }
 
         String email = jwtService.getEmailFromJwt(refreshToken);
-        ResponseCookie cookie = jwtService.generateJwtCookie(email);
-        LOGGER.info("Refreshed JWT token for user [" + email + "]");
+        ResponseCookie cookie = jwtService.generateAccessCookie(email);
+        LOGGER.info("Refreshed access token for user [" + email + "]");
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .build();
