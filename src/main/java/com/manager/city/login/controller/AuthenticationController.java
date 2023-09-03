@@ -64,8 +64,13 @@ public class AuthenticationController {
     public ResponseEntity<String> register(@RequestBody RegistrationRequest request) {
         try {
             RegistrationStatus status = registrationService.register(request);
-            LOGGER.info("Registered user [" + request.email().trim() + "]");
-            return ResponseEntity.ok().body(status.getMessage());
+            if (status == RegistrationStatus.OK) {
+                LOGGER.info("Registered user [" + request.email().trim() + "]");
+                return ResponseEntity.ok().body(status.getMessage());
+            }
+            LOGGER.warn("Unsuccessful registration with status [" + status + "] for user [" + request.email().trim() + "]");
+            return ResponseEntity.badRequest().body(status.getMessage());
+
         } catch (Exception e) {
             LOGGER.error("Failed to register user: ", e);
             return ResponseEntity.internalServerError().body("Unexpected error during registration");
