@@ -6,12 +6,12 @@ import com.manager.city.login.domain.User;
 import com.manager.city.login.dto.RegistrationRequest;
 import com.manager.city.login.repository.RoleRepository;
 import com.manager.city.login.repository.UserRepository;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 @Component
 public class RegistrationService {
@@ -21,8 +21,6 @@ public class RegistrationService {
     private final RoleRepository roleRepository;
 
     private final PasswordEncoder passwordEncoder;
-
-    private final Pattern emailPattern  = Pattern.compile("^(.+)@(.+)$");
 
     public RegistrationService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -34,7 +32,7 @@ public class RegistrationService {
         if (request.email() == null || request.email().isBlank()) {
             return RegistrationStatus.NO_EMAIL;
         }
-        if (!emailPattern.matcher(request.email()).matches()) {
+        if (!EmailValidator.getInstance().isValid(request.email())) {
             return RegistrationStatus.INVALID_EMAIL;
         }
 
