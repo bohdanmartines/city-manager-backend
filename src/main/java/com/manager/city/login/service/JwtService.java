@@ -12,8 +12,8 @@ import org.springframework.web.util.WebUtils;
 
 import javax.crypto.SecretKey;
 import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Optional;
 
@@ -22,9 +22,9 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 @Component
 public class JwtService {
 
-    private String cookieName;
-    private int accessTokenExpiryMinutes;
-    private int refreshTokenExpiryMinutes;
+    private final String cookieName;
+    private final int accessTokenExpiryMinutes;
+    private final int refreshTokenExpiryMinutes;
     private final SecretKey key;
 
     public JwtService(@Value("${city.manager.jwt.access.token.cookie.name}") String cookieName,
@@ -83,9 +83,8 @@ public class JwtService {
     }
 
     private Date getExpiryDate(Date issuedAt, int expiryMinutes) {
-        ZoneId zoneId = ZoneId.systemDefault();
-        LocalDateTime asLocalDate = issuedAt.toInstant().atZone(zoneId).toLocalDateTime();
-        return Date.from(asLocalDate.plusMinutes(expiryMinutes).atZone(zoneId).toInstant());
+        Instant expiryInstant = issuedAt.toInstant().plus(expiryMinutes, ChronoUnit.MINUTES);
+        return Date.from(expiryInstant);
     }
 
     private Optional<String> getJwtCookie(HttpServletRequest request) {
