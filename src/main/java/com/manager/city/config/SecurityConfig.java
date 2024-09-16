@@ -23,7 +23,7 @@ public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
 
-    private JwtService jwtService;
+    private final JwtService jwtService;
 
     public SecurityConfig(UserDetailsService userDetailsService, JwtService jwtService) {
         this.userDetailsService = userDetailsService;
@@ -61,6 +61,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/auth/login", "api/auth/register", "api/auth/refresh").permitAll()
                                 .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                                .requestMatchers("/api/mock/messages").permitAll()                  // TODO Remove this line once the UI authentication is implemented
                                 .anyRequest().authenticated()
                 );
         http.authenticationProvider(authenticationProvider());
