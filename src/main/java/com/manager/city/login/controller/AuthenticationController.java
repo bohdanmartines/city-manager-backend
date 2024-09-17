@@ -68,10 +68,8 @@ public class AuthenticationController {
         }
 
         String email = jwtService.getEmailFromJwt(refreshToken);
-        ResponseCookie cookie = jwtService.generateAccessCookie(email);
+        String accessToken = jwtService.generateAccessToken(email);
         LOGGER.info("Refreshed access token for user [" + email + "]");
-        return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .build();
+        return ResponseEntity.ok().body(accessToken);
     }
 }
