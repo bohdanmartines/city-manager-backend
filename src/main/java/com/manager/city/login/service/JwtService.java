@@ -38,8 +38,11 @@ public class JwtService {
     }
 
     public ResponseCookie generateAccessCookie(String email) {
-        String accessToken = generateJwtToken(email, accessTokenExpiryMinutes);
-        return generateCookie(accessToken, accessTokenExpiryMinutes);
+        return generateCookie(generateAccessToken(email), accessTokenExpiryMinutes);
+    }
+
+    public String generateAccessToken(String email) {
+        return generateJwtToken(email, accessTokenExpiryMinutes);
     }
 
     public String generateRefreshToken(String email) {
