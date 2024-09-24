@@ -6,6 +6,7 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
@@ -22,16 +23,16 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 @Component
 public class JwtService {
 
-    private final String cookieName;
+    private final String headerPrefix;
     private final int accessTokenExpiryMinutes;
     private final int refreshTokenExpiryMinutes;
     private final SecretKey key;
 
-    public JwtService(@Value("${city.manager.jwt.access.token.cookie.name}") String cookieName,
+    public JwtService(@Value("${city.manager.jwt.access.token.header.prefix}") String headerPrefix,
                       @Value("${city.manager.jwt.access.token.expiry.minutes}") int accessTokenExpiryMinutes,
                       @Value("${city.manager.jwt.refresh.token.expiry.minutes}") int refreshTokenExpiryMinutes,
                       @Value("${city.manager.jwt.secret}") String secret) {
-        this.cookieName = cookieName;
+        this.headerPrefix = headerPrefix;
         this.accessTokenExpiryMinutes = accessTokenExpiryMinutes;
         this.refreshTokenExpiryMinutes = refreshTokenExpiryMinutes;
         this.key = Keys.hmacShaKeyFor(secret.getBytes(US_ASCII));
@@ -50,7 +51,7 @@ public class JwtService {
     }
 
     public Optional<String> getEmail(HttpServletRequest request) {
-        Optional<String> jwt = getJwtCookie(request);
+        Optional<String> jwt = getJwtHeader(request);
         return jwt.map(this::getEmailFromJwt);
     }
 
@@ -68,7 +69,7 @@ public class JwtService {
     }
 
     private ResponseCookie generateCookie(String jwt, int expiryMinutes) {
-        return ResponseCookie.from(cookieName, jwt)
+        return ResponseCookie.from(headerPrefix, jwt)
                 .path("/api")
                 .maxAge(Duration.ofMinutes(expiryMinutes))
                 .httpOnly(true)
@@ -91,9 +92,17 @@ public class JwtService {
     }
 
     private Optional<String> getJwtCookie(HttpServletRequest request) {
-        Cookie cookie = WebUtils.getCookie(request, cookieName);
+        Cookie cookie = WebUtils.getCookie(request, headerPrefix);
         if (cookie != null) {
             return Optional.of(cookie.getValue());
+        }
+        return Optional.empty();
+    }
+
+    private Optional<String> getJwtHeader(HttpServletRequest request) {
+        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (header != null && header.startsWith(headerPrefix)) {
+            return Optional.of(header.substring(headerPrefix.length() + 1));
         }
         return Optional.empty();
     }
