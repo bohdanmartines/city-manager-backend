@@ -1,14 +1,13 @@
 package com.manager.city.ticket.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/ticket")
 public class TicketController {
 
     private static final List<TicketDto> MOCK_TICKETS = List.of(
@@ -17,7 +16,8 @@ public class TicketController {
             new TicketDto(3, "Increase Green Spaces", "Proposal to convert unused lots into community gardens and green spaces.", "Closed", "2024-09-21T14:45:00Z")
     );
 
-    @GetMapping("")
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/api/ticket/get")
     public ResponseEntity<List<TicketDto>> messages() {
         return ResponseEntity.ok().body(MOCK_TICKETS);
     }
