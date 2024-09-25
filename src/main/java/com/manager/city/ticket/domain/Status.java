@@ -18,4 +18,20 @@ public class Status {
 
     @Enumerated(EnumType.STRING)
     private StatusType name;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public StatusType getName() {
+        return name;
+    }
+
+    public void setName(StatusType name) {
+        this.name = name;
+    }
 }

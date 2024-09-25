@@ -5,6 +5,7 @@ import com.manager.city.ticket.domain.Status;
 import com.manager.city.ticket.domain.StatusType;
 import com.manager.city.ticket.domain.Ticket;
 import com.manager.city.ticket.dto.CreateTicketDto;
+import com.manager.city.ticket.dto.TicketDto;
 import com.manager.city.ticket.repository.StatusRepository;
 import com.manager.city.ticket.repository.TicketRepository;
 import org.springframework.http.HttpStatus;
@@ -31,5 +32,13 @@ public class TicketService {
         } else {
             throw new ApplicationException(HttpStatus.INTERNAL_SERVER_ERROR, "Cannot initialise ticket status");
         }
+    }
+
+    public TicketDto getTicket(long ticketId) {
+        Optional<Ticket> ticket = ticketRepository.findById(ticketId);
+        if (ticket.isEmpty()) {
+            throw new ApplicationException(HttpStatus.NOT_FOUND, "Ticket not found");
+        }
+        return ticket.map(TicketDto::toDto).get();
     }
 }
