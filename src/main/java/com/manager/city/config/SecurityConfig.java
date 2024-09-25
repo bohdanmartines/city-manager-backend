@@ -70,7 +70,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/auth/login", "api/auth/register", "api/auth/refresh").permitAll()
                                 .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                                .requestMatchers("/api/mock/messages").permitAll()                  // TODO Remove this line once the UI authentication is implemented
+                                .requestMatchers("/api/ticket").permitAll()                  // TODO Remove this line once the UI authentication is implemented
                                 .anyRequest().authenticated()
                 );
         http.authenticationProvider(authenticationProvider());
@@ -83,7 +83,7 @@ public class SecurityConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins(frontEndUrl).allowedHeaders(HttpHeaders.AUTHORIZATION);
+                registry.addMapping("/**").allowedOrigins(frontEndUrl);
             }
         };
     }
