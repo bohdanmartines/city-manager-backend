@@ -16,7 +16,6 @@ public class TicketController {
             new TicketDto(3, "Increase Green Spaces", "Proposal to convert unused lots into community gardens and green spaces.", "Closed", "2024-09-21T14:45:00Z")
     );
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/api/ticket/get")
     public ResponseEntity<List<TicketDto>> messages() {
         return ResponseEntity.ok().body(MOCK_TICKETS);
