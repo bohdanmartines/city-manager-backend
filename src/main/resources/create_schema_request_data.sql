@@ -44,7 +44,7 @@ CREATE TABLE request_data.request_history
 
 -- Insert test data
 INSERT INTO request_data.status (name)
-VALUES ('CREATED');
+VALUES ('OPEN');
 INSERT INTO request_data.status (name)
 VALUES ('IN_PROGRESS');
 INSERT INTO request_data.status (name)
