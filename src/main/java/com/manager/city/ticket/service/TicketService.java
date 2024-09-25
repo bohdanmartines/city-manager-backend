@@ -11,6 +11,7 @@ import com.manager.city.ticket.repository.TicketRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -40,5 +41,12 @@ public class TicketService {
             throw new ApplicationException(HttpStatus.NOT_FOUND, "Ticket not found");
         }
         return ticket.map(TicketDto::toDto).get();
+    }
+
+    public List<TicketDto> getAllTickets() {
+        return ticketRepository.findAll()
+                .stream()
+                .map(TicketDto::toDto)
+                .toList();
     }
 }

@@ -10,7 +10,7 @@ public record TicketDto(long id, String title, String description, String status
                 ticket.getTitle(),
                 ticket.getDescription(),
                 ticket.getStatus().getName().name(),
-                ticket.getCreatedAt().toString()
+                ticket.getCreatedAt() != null ? ticket.getCreatedAt().toString() : null
         );
     }
 }
