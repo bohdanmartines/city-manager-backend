@@ -7,6 +7,7 @@ import com.manager.city.ticket.dto.TicketDto;
 import com.manager.city.ticket.service.TicketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,10 +34,10 @@ public class TicketController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TicketDto>> getAllTickets(@RequestParam int page, @RequestParam int size) {
+    public ResponseEntity<Page<TicketDto>> getAllTickets(@RequestParam int page, @RequestParam int size) {
         LOGGER.info("Received request to get all tickets with pagination params: page [{}], size [{}]", page, size);
         return ResponseEntity.ok()
-                .body(ticketService.getAllTickets());
+                .body(ticketService.getTickets(page, size));
     }
 
     @PostMapping("new")

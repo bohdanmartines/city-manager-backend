@@ -8,6 +8,9 @@ import com.manager.city.ticket.dto.CreateTicketDto;
 import com.manager.city.ticket.dto.TicketDto;
 import com.manager.city.ticket.repository.StatusRepository;
 import com.manager.city.ticket.repository.TicketRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -43,10 +46,8 @@ public class TicketService {
         return ticket.map(TicketDto::toDto).get();
     }
 
-    public List<TicketDto> getAllTickets() {
-        return ticketRepository.findAll()
-                .stream()
-                .map(TicketDto::toDto)
-                .toList();
+    public Page<TicketDto> getTickets(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ticketRepository.findAll(pageable).map(TicketDto::toDto);
     }
 }
