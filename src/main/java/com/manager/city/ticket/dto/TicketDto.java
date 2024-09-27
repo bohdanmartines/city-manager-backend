@@ -9,13 +9,14 @@ public record TicketDto(long id,
                         String creatorEmail,
                         String assigneeEmail,
                         String createdAt,
+                        Integer votes,
                         Boolean iVoted) {
 
     public static TicketDto toDto(Ticket ticket) {
-        return toDto(ticket, null);
+        return toDto(ticket, null, null);
     }
 
-    public static TicketDto toDto(Ticket ticket, Boolean iVoted) {
+    public static TicketDto toDto(Ticket ticket, Integer votes, Boolean iVoted) {
         return new TicketDto(
                 ticket.getId(),
                 ticket.getTitle(),
@@ -24,6 +25,7 @@ public record TicketDto(long id,
                 ticket.getCreator().getEmail(),
                 ticket.getAssignee() != null ? ticket.getAssignee().getEmail() : null,
                 ticket.getCreatedAt() != null ? ticket.getCreatedAt().toString() : null,
+                votes,
                 iVoted
         );
     }

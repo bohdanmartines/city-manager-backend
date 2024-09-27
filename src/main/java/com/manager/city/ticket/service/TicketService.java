@@ -51,8 +51,9 @@ public class TicketService {
         if (ticket.isEmpty()) {
             throw new ApplicationException(HttpStatus.NOT_FOUND, "Ticket not found");
         }
-        Optional<Vote> vote = voteRepository.findByTicketIdAndVoterId(ticketId, userId);
-        return ticket.map(t -> TicketDto.toDto(t, vote.isPresent())).get();
+        int ticketVotes = voteRepository.countByTicketId(ticketId);
+        Optional<Vote> userTicketVote = voteRepository.findByTicketIdAndVoterId(ticketId, userId);
+        return ticket.map(t -> TicketDto.toDto(t, ticketVotes, userTicketVote.isPresent())).get();
     }
 
     public Page<TicketDto> getTickets(int page, int size) {
