@@ -1,6 +1,8 @@
 package com.manager.city.ticket.service;
 
+import com.manager.city.login.domain.User;
 import com.manager.city.login.exception.ApplicationException;
+import com.manager.city.login.repository.UserRepository;
 import com.manager.city.ticket.domain.Status;
 import com.manager.city.ticket.domain.StatusType;
 import com.manager.city.ticket.domain.Ticket;
@@ -22,19 +24,22 @@ public class TicketService {
 
     private final TicketRepository ticketRepository;
     private final StatusRepository statusRepository;
+    private final UserRepository userRepository;
 
-    public TicketService(TicketRepository ticketRepository, StatusRepository statusRepository) {
+    public TicketService(TicketRepository ticketRepository, StatusRepository statusRepository, UserRepository userRepository) {
         this.ticketRepository = ticketRepository;
         this.statusRepository = statusRepository;
+        this.userRepository = userRepository;
     }
 
     public Ticket createTicket(CreateTicketDto ticketRequest, long creatorId) {
         Optional<Status> openStatus = statusRepository.findByName(StatusType.OPEN);
-        if (openStatus.isPresent()) {
-            Ticket ticket = new Ticket(ticketRequest.title(), ticketRequest.description(), creatorId, openStatus.get());
+        Optional<User> creator = userRepository.findById(creatorId);
+        if (openStatus.isPresent() && creator.isPresent()) {
+            Ticket ticket = new Ticket(ticketRequest.title(), ticketRequest.description(), creator.get(), openStatus.get());
             return ticketRepository.save(ticket);
         } else {
-            throw new ApplicationException(HttpStatus.INTERNAL_SERVER_ERROR, "Cannot initialise ticket status");
+            throw new ApplicationException(HttpStatus.INTERNAL_SERVER_ERROR, "Cannot initialise ticket status or creator");
         }
     }
 

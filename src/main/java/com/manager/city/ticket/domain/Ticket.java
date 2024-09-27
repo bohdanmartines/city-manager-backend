@@ -1,6 +1,7 @@
 package com.manager.city.ticket.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.manager.city.login.domain.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,7 +25,9 @@ public class Ticket {
     @JsonIgnore
     private String description;
 
-    private Long creatorId;
+    @OneToOne()
+    @JoinColumn(name = "creator_id", referencedColumnName = "id")
+    private User creator;
 
     @OneToOne()
     @JoinColumn(name = "status_id", referencedColumnName = "id")
@@ -37,10 +40,10 @@ public class Ticket {
     public Ticket() {
     }
 
-    public Ticket(String title, String description, Long creatorId, Status status) {
+    public Ticket(String title, String description, User creator, Status status) {
         this.title = title;
         this.description = description;
-        this.creatorId = creatorId;
+        this.creator = creator;
         this.status = status;
         this.createdAt = LocalDateTime.now();
     }
@@ -69,12 +72,12 @@ public class Ticket {
         this.description = description;
     }
 
-    public Long getCreatorId() {
-        return creatorId;
+    public User getCreator() {
+        return creator;
     }
 
-    public void setCreatorId(Long creatorId) {
-        this.creatorId = creatorId;
+    public void setCreator(User creatorId) {
+        this.creator = creatorId;
     }
 
     public Status getStatus() {
