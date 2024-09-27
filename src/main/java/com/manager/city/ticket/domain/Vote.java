@@ -19,4 +19,33 @@ public class Vote {
     private Long ticketId;
 
     private Long voterId;
+
+    public Vote(Long ticketId, Long voterId) {
+        this.ticketId = ticketId;
+        this.voterId = voterId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getTicketId() {
+        return ticketId;
+    }
+
+    public void setTicketId(Long ticketId) {
+        this.ticketId = ticketId;
+    }
+
+    public Long getVoterId() {
+        return voterId;
+    }
+
+    public void setVoterId(Long voterId) {
+        this.voterId = voterId;
+    }
 }

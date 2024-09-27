@@ -55,6 +55,15 @@ public class TicketService {
         return ticket.map(t -> TicketDto.toDto(t, vote.isPresent())).get();
     }
 
+    public void voteForTicket(long ticketId, long userId) {
+        Optional<Ticket> ticket = ticketRepository.findById(ticketId);
+        if (ticket.isEmpty()) {
+            throw new ApplicationException(HttpStatus.NOT_FOUND, "Ticket not found");
+        }
+        Vote vote = new Vote(ticketId, userId);
+        voteRepository.save(vote);
+    }
+
     public Page<TicketDto> getTickets(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ticketRepository.findAll(pageable).map(TicketDto::toDto);

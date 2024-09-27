@@ -56,4 +56,13 @@ public class TicketController {
         TicketDto ticket = ticketService.getTicket(ticketId, user.getId());
         return ResponseEntity.ok().body(ticket);
     }
+
+    @PostMapping("{ticketId}/vote")
+    public ResponseEntity<Void> voteForTicket(Authentication authentication,
+                                               @PathVariable long ticketId) {
+        UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
+        LOGGER.info("User [{}] votes for ticket [{}]", user.getId(), ticketId);
+        ticketService.voteForTicket(ticketId, user.getId());
+        return ResponseEntity.ok().build();
+    }
 }
