@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/ticket")
@@ -51,8 +50,10 @@ public class TicketController {
     }
 
     @GetMapping("{ticketId}")
-    public ResponseEntity<TicketDto> getTicket(@PathVariable long ticketId) {
-        TicketDto ticket = ticketService.getTicket(ticketId);
+    public ResponseEntity<TicketDto> getTicket(Authentication authentication,
+                                               @PathVariable long ticketId) {
+        UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
+        TicketDto ticket = ticketService.getTicket(ticketId, user.getId());
         return ResponseEntity.ok().body(ticket);
     }
 }

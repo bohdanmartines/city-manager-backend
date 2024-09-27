@@ -2,9 +2,20 @@ package com.manager.city.ticket.dto;
 
 import com.manager.city.ticket.domain.Ticket;
 
-public record TicketDto(long id, String title, String description, String status, String creatorEmail, String assigneeEmail, String createdAt) {
+public record TicketDto(long id,
+                        String title,
+                        String description,
+                        String status,
+                        String creatorEmail,
+                        String assigneeEmail,
+                        String createdAt,
+                        Boolean iVoted) {
 
     public static TicketDto toDto(Ticket ticket) {
+        return toDto(ticket, null);
+    }
+
+    public static TicketDto toDto(Ticket ticket, Boolean iVoted) {
         return new TicketDto(
                 ticket.getId(),
                 ticket.getTitle(),
@@ -12,7 +23,8 @@ public record TicketDto(long id, String title, String description, String status
                 ticket.getStatus().getName().name(),
                 ticket.getCreator().getEmail(),
                 ticket.getAssignee() != null ? ticket.getAssignee().getEmail() : null,
-                ticket.getCreatedAt() != null ? ticket.getCreatedAt().toString() : null
+                ticket.getCreatedAt() != null ? ticket.getCreatedAt().toString() : null,
+                iVoted
         );
     }
 }

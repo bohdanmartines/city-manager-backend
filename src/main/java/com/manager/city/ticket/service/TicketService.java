@@ -6,17 +6,18 @@ import com.manager.city.login.repository.UserRepository;
 import com.manager.city.ticket.domain.Status;
 import com.manager.city.ticket.domain.StatusType;
 import com.manager.city.ticket.domain.Ticket;
+import com.manager.city.ticket.domain.Vote;
 import com.manager.city.ticket.dto.CreateTicketDto;
 import com.manager.city.ticket.dto.TicketDto;
 import com.manager.city.ticket.repository.StatusRepository;
 import com.manager.city.ticket.repository.TicketRepository;
+import com.manager.city.ticket.repository.VoteRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,11 +26,13 @@ public class TicketService {
     private final TicketRepository ticketRepository;
     private final StatusRepository statusRepository;
     private final UserRepository userRepository;
+    private final VoteRepository voteRepository;
 
-    public TicketService(TicketRepository ticketRepository, StatusRepository statusRepository, UserRepository userRepository) {
+    public TicketService(TicketRepository ticketRepository, StatusRepository statusRepository, UserRepository userRepository, VoteRepository voteRepository) {
         this.ticketRepository = ticketRepository;
         this.statusRepository = statusRepository;
         this.userRepository = userRepository;
+        this.voteRepository = voteRepository;
     }
 
     public Ticket createTicket(CreateTicketDto ticketRequest, long creatorId) {
@@ -43,12 +46,13 @@ public class TicketService {
         }
     }
 
-    public TicketDto getTicket(long ticketId) {
+    public TicketDto getTicket(long ticketId, long userId) {
         Optional<Ticket> ticket = ticketRepository.findById(ticketId);
         if (ticket.isEmpty()) {
             throw new ApplicationException(HttpStatus.NOT_FOUND, "Ticket not found");
         }
-        return ticket.map(TicketDto::toDto).get();
+        Optional<Vote> vote = voteRepository.findByTicketIdAndVoterId(ticketId, userId);
+        return ticket.map(t -> TicketDto.toDto(t, vote.isPresent())).get();
     }
 
     public Page<TicketDto> getTickets(int page, int size) {
