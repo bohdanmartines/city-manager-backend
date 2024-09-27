@@ -58,11 +58,20 @@ public class TicketController {
     }
 
     @PostMapping("{ticketId}/vote")
-    public ResponseEntity<Void> voteForTicket(Authentication authentication,
-                                               @PathVariable long ticketId) {
+    public ResponseEntity<Void> voteTicket(Authentication authentication,
+                                           @PathVariable long ticketId) {
         UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
         LOGGER.info("User [{}] votes for ticket [{}]", user.getId(), ticketId);
-        ticketService.voteForTicket(ticketId, user.getId());
+        ticketService.voteTicket(ticketId, user.getId());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("{ticketId}/unvote")
+    public ResponseEntity<Void> unvoteTicket(Authentication authentication,
+                                           @PathVariable long ticketId) {
+        UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
+        LOGGER.info("User [{}] un-votes for ticket [{}]", user.getId(), ticketId);
+        ticketService.unvoteTicket(ticketId, user.getId());
         return ResponseEntity.ok().build();
     }
 }

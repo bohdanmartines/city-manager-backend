@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -55,13 +56,22 @@ public class TicketService {
         return ticket.map(t -> TicketDto.toDto(t, vote.isPresent())).get();
     }
 
-    public void voteForTicket(long ticketId, long userId) {
+    public void voteTicket(long ticketId, long userId) {
         Optional<Ticket> ticket = ticketRepository.findById(ticketId);
         if (ticket.isEmpty()) {
             throw new ApplicationException(HttpStatus.NOT_FOUND, "Ticket not found");
         }
         Vote vote = new Vote(ticketId, userId);
         voteRepository.save(vote);
+    }
+
+    @Transactional
+    public void unvoteTicket(long ticketId, long userId) {
+        Optional<Ticket> ticket = ticketRepository.findById(ticketId);
+        if (ticket.isEmpty()) {
+            throw new ApplicationException(HttpStatus.NOT_FOUND, "Ticket not found");
+        }
+        voteRepository.deleteByTicketIdAndVoterId(ticketId, userId);
     }
 
     public Page<TicketDto> getTickets(int page, int size) {

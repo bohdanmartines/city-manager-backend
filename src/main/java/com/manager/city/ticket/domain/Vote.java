@@ -20,6 +20,9 @@ public class Vote {
 
     private Long voterId;
 
+    public Vote() {
+    }
+
     public Vote(Long ticketId, Long voterId) {
         this.ticketId = ticketId;
         this.voterId = voterId;
