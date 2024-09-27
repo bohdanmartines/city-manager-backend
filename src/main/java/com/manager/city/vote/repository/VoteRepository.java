@@ -1,6 +1,6 @@
-package com.manager.city.ticket.repository;
+package com.manager.city.vote.repository;
 
-import com.manager.city.ticket.domain.Vote;
+import com.manager.city.vote.domain.Vote;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

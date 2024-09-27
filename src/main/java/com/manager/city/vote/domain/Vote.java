@@ -1,4 +1,4 @@
-package com.manager.city.ticket.domain;
+package com.manager.city.vote.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

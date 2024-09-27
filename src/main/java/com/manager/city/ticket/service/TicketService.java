@@ -6,18 +6,17 @@ import com.manager.city.login.repository.UserRepository;
 import com.manager.city.ticket.domain.Status;
 import com.manager.city.ticket.domain.StatusType;
 import com.manager.city.ticket.domain.Ticket;
-import com.manager.city.ticket.domain.Vote;
 import com.manager.city.ticket.dto.CreateTicketDto;
 import com.manager.city.ticket.dto.TicketDto;
 import com.manager.city.ticket.repository.StatusRepository;
 import com.manager.city.ticket.repository.TicketRepository;
-import com.manager.city.ticket.repository.VoteRepository;
+import com.manager.city.vote.domain.Vote;
+import com.manager.city.vote.repository.VoteRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -54,24 +53,6 @@ public class TicketService {
         }
         Optional<Vote> vote = voteRepository.findByTicketIdAndVoterId(ticketId, userId);
         return ticket.map(t -> TicketDto.toDto(t, vote.isPresent())).get();
-    }
-
-    public void voteTicket(long ticketId, long userId) {
-        Optional<Ticket> ticket = ticketRepository.findById(ticketId);
-        if (ticket.isEmpty()) {
-            throw new ApplicationException(HttpStatus.NOT_FOUND, "Ticket not found");
-        }
-        Vote vote = new Vote(ticketId, userId);
-        voteRepository.save(vote);
-    }
-
-    @Transactional
-    public void unvoteTicket(long ticketId, long userId) {
-        Optional<Ticket> ticket = ticketRepository.findById(ticketId);
-        if (ticket.isEmpty()) {
-            throw new ApplicationException(HttpStatus.NOT_FOUND, "Ticket not found");
-        }
-        voteRepository.deleteByTicketIdAndVoterId(ticketId, userId);
     }
 
     public Page<TicketDto> getTickets(int page, int size) {
