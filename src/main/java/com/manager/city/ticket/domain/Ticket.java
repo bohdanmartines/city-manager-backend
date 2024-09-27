@@ -25,15 +25,17 @@ public class Ticket {
     @JsonIgnore
     private String description;
 
-    @OneToOne()
+    @OneToOne
     @JoinColumn(name = "creator_id", referencedColumnName = "id")
     private User creator;
 
-    @OneToOne()
+    @OneToOne
     @JoinColumn(name = "status_id", referencedColumnName = "id")
     private Status status;
 
-    private Long assigneeId;
+    @OneToOne
+    @JoinColumn(name = "assignee_id", referencedColumnName = "id")
+    private User assignee;
 
     private LocalDateTime createdAt;
 
@@ -88,12 +90,12 @@ public class Ticket {
         this.status = status;
     }
 
-    public Long getAssigneeId() {
-        return assigneeId;
+    public User getAssignee() {
+        return assignee;
     }
 
-    public void setAssigneeId(Long assigneeId) {
-        this.assigneeId = assigneeId;
+    public void setAssignee(User assigneeId) {
+        this.assignee = assigneeId;
     }
 
     public LocalDateTime getCreatedAt() {
