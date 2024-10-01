@@ -35,21 +35,3 @@ INSERT INTO user_data.role (name)
 VALUES ('EXECUTOR');
 INSERT INTO user_data.role (name)
 VALUES ('ADMIN');
-
-INSERT INTO user_data.user (email, password, name, surname)
-VALUES ('test.email@gmail.com', 'test', 'test', 'user');
-INSERT INTO user_data.user (email, password, name, surname)
-VALUES ('john.doe@gmail.com', 'john', 'john', 'doe');
-
-INSERT INTO user_data.user_role (user_id, role_id)
-VALUES ((SELECT id FROM user_data.user WHERE email = 'test.email@gmail.com'),
-        (SELECT id FROM user_data.role WHERE name = 'CITIZEN'));
-INSERT INTO user_data.user_role (user_id, role_id)
-VALUES ((SELECT id FROM user_data.user WHERE email = 'test.email@gmail.com'),
-        (SELECT id FROM user_data.role WHERE name = 'EXECUTOR'));
-INSERT INTO user_data.user_role (user_id, role_id)
-VALUES ((SELECT id FROM user_data.user WHERE email = 'john.doe@gmail.com'),
-        (SELECT id FROM user_data.role WHERE name = 'CITIZEN'));
-INSERT INTO user_data.user_role (user_id, role_id)
-VALUES ((SELECT id FROM user_data.user WHERE email = 'john.doe@gmail.com'),
-        (SELECT id FROM user_data.role WHERE name = 'ADMIN'));

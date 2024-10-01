@@ -51,20 +51,3 @@ INSERT INTO request_data.status (name)
 VALUES ('RESOLVED');
 INSERT INTO request_data.status (name)
 VALUES ('DISCARDED');
-
-INSERT INTO request_data.request (title, description, creator_id, status_id)
-VALUES ('Plan trees in the central park', 'The central park needs more trees!', 1, 1);
-INSERT INTO request_data.request (title, description, creator_id, status_id, assignee_id)
-VALUES ('Add streen lights to Main street', 'It''s noticeably dark on the Main street after the sunset. Could you add more lights please?', 1, 1, 1);
-
-
-INSERT INTO request_data.request_vote (request_id, voter_id)
-VALUES (1, 1);
-INSERT INTO request_data.request_vote (request_id, voter_id)
-VALUES (1, 2);
-
-INSERT INTO request_data.request_message (request_id, message)
-VALUES (1, 'Test message');
-
-INSERT INTO request_data.request_history (request_id, event)
-VALUES (1, 'Changed assignee to Jennifer');
