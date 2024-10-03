@@ -19,3 +19,6 @@ Requests have status showing the progress, they also have messages and history o
 | /api/requests                     | Get requests of all users. Accessible only by workers and admins                  |
 | /api/user/<user_id>/requests      | Get requests of a user. Accessible by workers, admins and the user owning request |
 | /api/requests/<request_id>/assign | Assign a request to a worker. Accessible only by workers and admins               |
+
+## Local run
+For running locally, please set `spring.profiles.active=local` in `application.properties` file.
