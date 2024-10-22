@@ -64,13 +64,16 @@ have PostgreSQL database running on your machine.
 ### Clone the repository
 
 Run this command to clone the repository:
+
 ```shell
 git clone https://github.com/blabla/city-manager-backend.git
 ```
 
 ### Prepare the database
 
-Execute the next SQL scripts in order to set up the database with necessary schema and tables:
+Execute the next SQL scripts in order to set up the database with necessary schema and tables. This is needed only
+before the first run.
+
 - [create_database.sql](src/main/resources/sql/create_database.sql)
 - [create_schema_user_data.sql](src/main/resources/sql/create_schema_user_data.sql)
 - [create_schema_request_data.sql](src/main/resources/sql/create_schema_request_data.sql)
@@ -87,11 +90,11 @@ spring.profiles.active=local
 
 You can start the application in one of two ways. The API will be exposed on port 8080
 
-### Run in your IDE
+#### Run in your IDE
 
-Open the project in your preferred IDE and click the run button. 
+Open the project in your preferred IDE and click the run button.
 
-### Run via maven
+#### Run via maven
 
 You can also run the application from the command line with Maven:
 
