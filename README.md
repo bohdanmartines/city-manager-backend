@@ -58,8 +58,11 @@ The following are the primary API endpoints for the City Manager backend:
 
 ### Prerequisites
 
-Before you start the application, please make sure that you have Java and Maven installed locally. You will also need to
-have PostgreSQL database running on your machine.
+Ensure you have the following installed on your machine before running the application:
+
+- Java (version 17 or higher)
+- Maven
+- PostgreSQL (should be started when you run the application)
 
 ### Clone the repository
 
