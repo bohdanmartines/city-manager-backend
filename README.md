@@ -1,24 +1,100 @@
-# improve-my-city-backend
+# City Manager - Backend Component
 
-This application is designed to help manage tasks improve the city.
-The repository provides API for this functionality.
+Welcome to the backend component of the City Manager application, a ticket management system designed to streamline city
+improvement initiatives. This repository contains the server-side logic and APIs to support the frontend application.
 
-## Functionality description
+**Note:** This is an MVP version of the application, developed as a pet project. It serves as a
+foundation for future enhancements and features.
 
-Registered users can create requests for improvement and vote for others' requests.
-Executors can pick request based on the votes.
-Requests have status showing the progress, they also have messages and history of changes.
+## Table of Contents
 
-## API specification
+- [Features](#features)
+- [Technologies](#technologies)
+- [API Endpoints](#api-endpoints)
+- [Running locally](#running-locally)
 
-| Endpoint                          | Description                                                                       |
-|:----------------------------------|:----------------------------------------------------------------------------------|
-| /api/auth/login                   | Login a user                                                                      |
-| /api/auth/logout                  | Logout a user                                                                     |
-| /api/auth/register                | Register a user                                                                   |
-| /api/requests                     | Get requests of all users. Accessible only by workers and admins                  |
-| /api/user/<user_id>/requests      | Get requests of a user. Accessible by workers, admins and the user owning request |
-| /api/requests/<request_id>/assign | Assign a request to a worker. Accessible only by workers and admins               |
+## Features
 
-## Local run
-For running locally, please set `spring.profiles.active=local` in `application.properties` file.
+- **User Authentication**: Secure access for users via token-based authentication, allowing users to register, log in,
+  and manage their sessions securely.
+- **Ticket Management**: Create and view tickets for city improvement projects.
+- **Voting**: Users can vote on tickets to express their support for city improvement initiatives, helping prioritize
+  which projects should be addressed first.
+
+## Technologies
+
+This backend is built using:
+
+- Java
+- Spring Boot
+- Spring Web
+- Spring Data JPA
+- PostgreSQL
+- JWT (JSON Web Tokens)
+- Swagger
+
+## API Endpoints
+
+The following are the primary API endpoints for the City Manager backend:
+
+### Authentication
+
+- **POST** `/api/auth/register` - Register a new user
+- **POST** `/api/auth/login` - Login an existing user
+- **POST** `/api/auth/refresh` - Refresh an access token by existing refresh token
+
+### Tickets
+
+- **POST** `/api/ticket/new` - Create a new ticket
+- **GET** `/api/ticket` - Retrieve all tickets in a paged manner
+- **GET** `/api/ticket/:id` - Retrieve a specific ticket by ID
+
+### Voting
+
+- **POST** `/api/ticket/:id/vote` - Vote for a specific ticket by ID
+- **POST** `/api/ticket/:id/unvote` - Remote a vote for a specific ticket by ID
+
+## Running locally
+
+### Prerequisites
+
+Before you start the application, please make sure that you have Java and Maven installed locally. You will also need to
+have PostgreSQL database running on your machine.
+
+### Clone the repository
+
+Run this command to clone the repository:
+```shell
+git clone https://github.com/blabla/city-manager-backend.git
+```
+
+### Prepare the database
+
+Execute the next SQL scripts in order to set up the database with necessary schema and tables:
+- [create_database.sql](src/main/resources/sql/create_database.sql)
+- [create_schema_user_data.sql](src/main/resources/sql/create_schema_user_data.sql)
+- [create_schema_request_data.sql](src/main/resources/sql/create_schema_request_data.sql)
+
+### Use local profile
+
+Set the profile to `local` in [application.properties](src/main/resources/application.properties)
+
+```properties
+spring.profiles.active=local
+```
+
+### Run the application
+
+You can start the application in one of two ways. The API will be exposed on port 8080
+
+### Run in your IDE
+
+Open the project in your preferred IDE and click the run button. 
+
+### Run via maven
+
+You can also run the application from the command line with Maven:
+
+```properties
+mvn spring-boot:run
+```
